@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 
 @Entity('Usuarios')
 export class Usuarios {
@@ -8,31 +8,15 @@ export class Usuarios {
   @Column()
   nombre: string;
 
-  @Column()
-  apellidos: string;
-
-  @Column({ nullable: true })
+  @Column({ unique: true })
   correo: string;
 
-  @Column({ nullable: true })
-  telefono: string;
-
-  @Column({ type: 'date' })
-  fechaNacimiento: Date;
-
   @Column()
-  genero: string;
+  password_hash: string;
 
-  @Column()
-  contraseña: string;
+  @CreateDateColumn({ type: 'timestamp' })
+  fecha_creacion: Date;
 
-  @Column()
-  estado: boolean;
-
-  @Column({ type: 'date' })
-  fechaCreacion: Date;
-
-  @Column()
-  idRol: number;
+  @Column({ default: true })
+  isActive: boolean;
 }
-

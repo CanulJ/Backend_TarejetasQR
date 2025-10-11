@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Usuarios } from './usuarios.entity';
-import { NotFoundException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsuariosService {
@@ -11,40 +11,60 @@ export class UsuariosService {
     private readonly usuariosRepository: Repository<Usuarios>,
   ) {}
 
-
-  
-  // Obtener todos los usuarios
-  findAll(): Promise<Usuarios[]> {
+  async findAll(): Promise<Usuarios[]> {
     return this.usuariosRepository.find();
   }
 
-
-async findOne(id: number): Promise<Usuarios> {
-  const usuario = await this.usuariosRepository.findOne({ where: { id } });
-  if (!usuario) {
-    throw new NotFoundException(`Usuario con id ${id} no encontrado`);
-  }
-  return usuario;
-}
-
-
-  // Crear un nuevo usuario
-  create(usuario: Usuarios): Promise<Usuarios> {
-    return this.usuariosRepository.save(usuario);
+  async findOne(id: number): Promise<Usuarios> {
+    const usuario = await this.usuariosRepository.findOne({ where: { id } });
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con id ${id} no encontrado`);
+    }
+    return usuario;
   }
 
-  // Actualizar un usuario por ID
-  async update(id: number, usuario: Partial<Usuarios>): Promise<Usuarios> {
-  await this.usuariosRepository.update(id, usuario);
-  // findOne ahora nunca devuelve null, así que TypeScript no se queja
-  return this.findOne(id);
-}
+  async findByCorreo(correo: string): Promise<Usuarios | undefined> {
+    const usuario = await this.usuariosRepository.findOne({ where: { correo } });
+    return usuario || undefined;
+  }
 
-  // Eliminar un usuario por ID
+  async create(data: Partial<Usuarios>): Promise<Usuarios> {
+    if (!data.correo) {
+      throw new BadRequestException('El correo es requerido');
+    }
+    if (!data.password_hash) {
+      throw new BadRequestException('La contraseña es requerida');
+    }
+    // Verificar si el correo ya existe
+    const existe = await this.findByCorreo(data.correo);
+    if (existe) {
+      throw new BadRequestException('El correo ya está registrado');
+    }
+
+    // Hash de contraseña
+    const hashedPassword = await bcrypt.hash(data.password_hash, 10);
+
+    const nuevoUsuario = this.usuariosRepository.create({
+      ...data,
+      password_hash: hashedPassword,
+    });
+
+    return this.usuariosRepository.save(nuevoUsuario);
+  }
+
+  async update(id: number, data: Partial<Usuarios>): Promise<Usuarios> {
+    const usuario = await this.findOne(id);
+
+    if (data.password_hash) {
+      data.password_hash = await bcrypt.hash(data.password_hash, 10);
+    }
+
+    await this.usuariosRepository.update(id, data);
+    return this.findOne(id);
+  }
+
   async remove(id: number): Promise<{ deleted: boolean }> {
-  const result = await this.usuariosRepository.delete(id);
-  const deleted = result.affected && result.affected > 0 ? true : false;
-  return { deleted };
-}
-
+    const result = await this.usuariosRepository.delete(id);
+    return { deleted: !!result.affected && result.affected > 0 };
+  }
 }

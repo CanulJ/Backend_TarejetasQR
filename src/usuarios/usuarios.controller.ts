@@ -2,38 +2,35 @@ import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common'
 import { UsuariosService } from './usuarios.service';
 import { Usuarios } from './usuarios.entity';
 
-
 @Controller('usuarios')
 export class UsuariosController {
-  constructor(private readonly usersService: UsuariosService) {}
+  constructor(private readonly usuariosService: UsuariosService) {}
 
-  // Obtener todos los usuarios
   @Get()
-  async findAll(): Promise<Usuarios[]> {
-    return this.usersService.findAll();
+  findAll(): Promise<Usuarios[]> {
+    return this.usuariosService.findAll();
   }
 
-  // Obtener un usuario por ID
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Usuarios> {
-    return this.usersService.findOne(id);
+  findOne(@Param('id') id: number): Promise<Usuarios> {
+    return this.usuariosService.findOne(id);
   }
 
-  // Crear un usuario
   @Post()
-  async create(@Body() user: Usuarios): Promise<Usuarios> {
-    return this.usersService.create(user);
+  create(@Body() data: Partial<Usuarios>): Promise<Usuarios> {
+    return this.usuariosService.create(data);
   }
 
-  // Actualizar un usuario por ID
   @Put(':id')
-  async update(@Param('id') id: number, @Body() user: Partial<Usuarios>): Promise<Usuarios> {
-    return this.usersService.update(id, user);
+  update(
+    @Param('id') id: number,
+    @Body() data: Partial<Usuarios>,
+  ): Promise<Usuarios> {
+    return this.usuariosService.update(id, data);
   }
 
-  // Eliminar un usuario por ID
   @Delete(':id')
-  async remove(@Param('id') id: number): Promise<{ deleted: boolean }> {
-    return this.usersService.remove(id);
+  remove(@Param('id') id: number): Promise<{ deleted: boolean }> {
+    return this.usuariosService.remove(id);
   }
 }
