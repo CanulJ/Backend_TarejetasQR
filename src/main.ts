@@ -4,15 +4,16 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Habilita CORS para cualquier origen (puedes restringirlo después)
+  // Esto permite cualquier origen (Angular local o deployado)
   app.enableCors({
-    origin: true,
+    origin: true, 
     credentials: true,
   });
 
-  // Usa el puerto que Koyeb asigna
+  // Puerto dinámico que Koyeb te asigna
   const port = process.env.PORT || 8000;
   await app.listen(port);
   console.log(`API corriendo en puerto ${port}`);
 }
+
 bootstrap();
