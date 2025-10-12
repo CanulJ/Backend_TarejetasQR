@@ -27,7 +27,11 @@ async function bootstrap() {
     credentials: true,
   };
 
-  app.enableCors(corsOptions);
+  app.enableCors({
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+});
 
   await app.listen(process.env.PORT ?? 3000);
   console.log(`API corriendo en puerto ${process.env.PORT ?? 3000}`);
