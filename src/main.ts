@@ -5,20 +5,18 @@ import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.int
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // URLs permitidas
   const allowedOrigins = [
     'http://localhost:4200',           // desarrollo local
     'https://tu-frontend.koyeb.app',  // frontend desplegado
   ];
 
-  // Configuración de CORS
   const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
-      // Permite solicitudes sin origen (por ejemplo, Postman)
+      // solicitudes sin origen (Postman, etc.)
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
-        callback(null, true); // origen permitido
+        callback(null, true);
       } else {
         callback(new Error('Origen no permitido por CORS'));
       }
@@ -27,11 +25,8 @@ async function bootstrap() {
     credentials: true,
   };
 
-  app.enableCors({
-  origin: '*',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-});
+  // PASA corsOptions AQUÍ
+  app.enableCors(corsOptions);
 
   await app.listen(process.env.PORT ?? 3000);
   console.log(`API corriendo en puerto ${process.env.PORT ?? 3000}`);
