@@ -3,36 +3,44 @@ import { AppModule } from './app.module';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 
 async function bootstrap() {
-  // Crear la aplicación Nest
   const app = await NestFactory.create(AppModule);
 
-  // Lista de orígenes permitidos
   const allowedOrigins = [
-    'http://localhost:4200',           // tu front local
-    'https://qrtests.netlify.app',     // tu front desplegado
+    'http://localhost:4200',          // Front local
+    'https://qrtests.netlify.app',    // Front desplegado
   ];
 
-  // Configuración de CORS
-  const corsOptions: CorsOptions = {
-    origin: (origin, callback) => {
-      // Permite requests directas sin origin (Postman, curl, etc)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Origen no permitido por CORS'));
-      }
-    },
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  };
+  let corsOptions: CorsOptions;
 
-  // Activar CORS con la configuración
+  if (process.env.NODE_ENV === 'production') {
+    // Configuración CORS para producción
+    corsOptions = {
+      origin: (origin, callback) => {
+        // Permite requests sin origin (Postman, curl, etc)
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          console.warn(`Intento de acceso CORS desde origen no permitido: ${origin}`);
+          callback(new Error('Origen no permitido por CORS'));
+        }
+      },
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: true,
+    };
+  } else {
+    // Configuración CORS para desarrollo
+    corsOptions = {
+      origin: '*', // acepta todo
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: true,
+    };
+  }
+
   app.enableCors(corsOptions);
 
-  // Escuchar en el puerto de environment o 3000 por defecto
-  await app.listen(process.env.PORT ?? 3000);
-
-  console.log(`Servidor corriendo en puerto ${process.env.PORT ?? 3000}`);
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port);
+  console.log(`Servidor corriendo en puerto ${port}`);
 }
 
 bootstrap();
