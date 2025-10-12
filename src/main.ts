@@ -29,7 +29,7 @@ async function bootstrap() {
   });
 
   // Puerto dinámico (Koyeb u otro hosting) o 3000 local
-  const port = process.env.PORT ?? 3000;
+  const port = process.env.PORT ?? 8000;
   await app.listen(port);
   console.log(`API corriendo en puerto ${port}`);
 }
