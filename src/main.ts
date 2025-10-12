@@ -1,23 +1,23 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // URLs permitidas
+  // Lista de orígenes permitidos
   const allowedOrigins = [
-    'http://localhost:4200',          // Angular en local
-    'https://tu-frontend.koyeb.app', // frontend desplegado
+    'http://localhost:4200',           // Angular local
+    'http://127.0.0.1:4200',           // por si usas 127.0.0.1
+    'https://tu-frontend.koyeb.app',  // frontend desplegado
   ];
 
   // Configuración de CORS
-  const corsOptions: CorsOptions = {
+  app.enableCors({
     origin: (origin, callback) => {
-      // solicitudes sin origen (Postman o llamadas internas) pasan
+      // Solicitudes sin origen (Postman, curl) pasan
       if (!origin) return callback(null, true);
 
-      // si el origen está en la lista, pasa
+      // Si el origen está en la lista, permitir
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -25,14 +25,13 @@ async function bootstrap() {
       }
     },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true, // permite cookies y auth headers
-  };
+    credentials: true, // permite cookies y headers de auth
+  });
 
-  // Habilita CORS con la configuración
-  app.enableCors(corsOptions);
-
-  await app.listen(process.env.PORT ?? 3000);
-  console.log(`API corriendo en puerto ${process.env.PORT ?? 3000}`);
+  // Puerto dinámico (Koyeb u otro hosting) o 3000 local
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port);
+  console.log(`API corriendo en puerto ${port}`);
 }
 
 bootstrap();
