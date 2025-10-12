@@ -67,4 +67,17 @@ export class UsuariosService {
     const result = await this.usuariosRepository.delete(id);
     return { deleted: !!result.affected && result.affected > 0 };
   }
+
+async login(correo: string, password: string) {
+  const usuario = await this.findByCorreo(correo);
+  if (!usuario) throw new NotFoundException('Usuario no encontrado');
+
+  const passwordValida = await bcrypt.compare(password, usuario.password_hash);
+  if (!passwordValida) throw new BadRequestException('Contraseña incorrecta');
+
+  // Retornamos solo los datos públicos
+  const { password_hash, ...usuarioSafe } = usuario;
+  return usuarioSafe;
+}
+
 }
