@@ -35,4 +35,12 @@ export class DatosMedicosService {
     const result = await this.datosMedicosRepository.delete(id_datos);
     return { deleted: !!result.affected && result.affected > 0 };
   }
+
+  async findByUsuario(id_usuario: number): Promise<DatosMedicos[]> {
+  return this.datosMedicosRepository.find({
+    where: { id_usuario }
+  });
+}
+
+
 }

@@ -11,10 +11,10 @@ export class DatosMedicosController {
     return this.datosMedicosService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number): Promise<DatosMedicos> {
-    return this.datosMedicosService.findOne(id);
-  }
+  @Get('usuario/:id_usuario')
+async findByUsuario(@Param('id_usuario') id_usuario: number): Promise<DatosMedicos[]> {
+  return this.datosMedicosService.findByUsuario(id_usuario);
+}
 
   @Post()
   create(@Body() datos: DatosMedicos): Promise<DatosMedicos> {
