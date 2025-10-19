@@ -23,9 +23,6 @@ export class Usuarios {
   @Column({ length: 18, unique: true })
   curp: string;
 
-  @Column({ default: 'Activo' })
-  estado: string;
-
   @Column({ nullable: true })
   rolid: number;
 

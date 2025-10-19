@@ -55,7 +55,6 @@ export class UsuariosService {
   fechanacimiento: data.fechanacimiento,
   genero: data.genero,
   password_hash: hashedPassword,
-  estado: data.estado || 'Activo',
   rolid: data.rolid,
   isActive: true,
   fecha_creacion: new Date(), // <-- esto asegura que se guarde

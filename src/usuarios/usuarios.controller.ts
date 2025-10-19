@@ -49,7 +49,6 @@ export class UsuariosController {
       fechanacimiento?: Date;
       genero?: string;
       password: string; // campo que recibes sin cifrar
-      estado?: string;
       rolid?: number;
     },
   ): Promise<Usuarios> {
@@ -79,7 +78,6 @@ export class UsuariosController {
       fecha_nacimiento?: Date;
       genero?: string;
       password?: string;
-      estado?: string;
       rolid?: number;
     },
   ): Promise<Usuarios> {
