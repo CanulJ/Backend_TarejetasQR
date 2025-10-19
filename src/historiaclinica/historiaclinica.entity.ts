@@ -12,8 +12,8 @@ export class HistoriaClinica {
   @Column({ type: 'text', nullable: true })
   descripcion: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  fecharegistro: Date;
+  @CreateDateColumn({ type: 'date' })
+fecharegistro: Date;
 
   // Relación con DatosMedicos (muchas historias pueden pertenecer a un mismo registro médico)
   @ManyToOne(() => DatosMedicos, (datosMedicos) => datosMedicos.historiales, {
