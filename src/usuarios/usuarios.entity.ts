@@ -29,9 +29,6 @@ export class Usuarios {
   @Column({ nullable: true })
   rolid: number;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  fechacreacion: Date;
-
   @Column({ nullable: true })
   apellidos: string;
 

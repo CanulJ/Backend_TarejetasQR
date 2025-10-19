@@ -8,6 +8,8 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 import { Usuarios } from './usuarios/usuarios.entity';
 import { DatosMedicosModule } from './datosmedicos/datosmedicos.module';
 import { DatosMedicos } from './datosmedicos/datosmedicos.entity';
+import { HistoriaClinica } from './historiaclinica/historiaclinica.entity';
+import { Antecedentes } from './antecedentes/antecedentes.entity';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { DatosMedicos } from './datosmedicos/datosmedicos.entity';
       username: 'postgres.vsunqxpipbilirfztfib',
       password: 'Rosendo1_',
       database: 'postgres',
-      entities: [Usuarios, DatosMedicos], // ✅ Ambas entidades registradas
+      entities: [Usuarios, DatosMedicos, HistoriaClinica, Antecedentes], // ✅ Ambas entidades registradas
       synchronize: false, // Mantener false en producción
     }),
 
