@@ -23,40 +23,68 @@ export class UsuariosService {
     return usuario;
   }
 
-  async findByCorreo(correo: string): Promise<Usuarios | undefined> {
-    const usuario = await this.usuariosRepository.findOne({ where: { correo } });
-    return usuario || undefined;
+  async findByCorreo(correo: string): Promise<Usuarios | null> {
+    return await this.usuariosRepository.findOne({ where: { correo } });
   }
 
-  async create(data: Partial<Usuarios>): Promise<Usuarios> {
-    if (!data.correo) {
-      throw new BadRequestException('El correo es requerido');
-    }
-    if (!data.password_hash) {
-      throw new BadRequestException('La contraseña es requerida');
-    }
-    // Verificar si el correo ya existe
-    const existe = await this.findByCorreo(data.correo);
-    if (existe) {
-      throw new BadRequestException('El correo ya está registrado');
-    }
+  async create(data: any): Promise<Usuarios> {
+    const { correo, password, curp } = data;
 
-    // Hash de contraseña
-    const hashedPassword = await bcrypt.hash(data.password_hash, 10);
+    if (!correo) throw new BadRequestException('El correo es requerido');
+    if (!password) throw new BadRequestException('La contraseña es requerida');
+    if (!curp) throw new BadRequestException('La CURP es requerida');
 
+    // Verificar duplicados
+    const existeCorreo = await this.findByCorreo(correo);
+    if (existeCorreo) throw new BadRequestException('El correo ya está registrado');
+
+    const existeCURP = await this.usuariosRepository.findOne({ where: { curp } });
+    if (existeCURP) throw new BadRequestException('La CURP ya está registrada');
+
+    // Hashear contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Crear usuario con los nuevos campos
     const nuevoUsuario = this.usuariosRepository.create({
-      ...data,
+      nombre: data.nombre,
+      apellidos: data.apellidos,
+      curp: data.curp,
+      originario: data.originario,
+      correo: data.correo,
+      telefono: data.telefono,
+      fecha_nacimiento: data.fecha_nacimiento,
+      genero: data.genero,
       password_hash: hashedPassword,
-    });
+      estado: data.estado || 'Activo',
+      rolid: data.rolid,
+      isActive: true,
+    } as unknown as Usuarios);
 
     return this.usuariosRepository.save(nuevoUsuario);
   }
 
-  async update(id: number, data: Partial<Usuarios>): Promise<Usuarios> {
+  async update(id: number, data: any): Promise<Usuarios> {
     const usuario = await this.findOne(id);
+    if (!usuario) throw new NotFoundException('Usuario no encontrado');
 
-    if (data.password_hash) {
-      data.password_hash = await bcrypt.hash(data.password_hash, 10);
+    if (data.password) {
+      data.password_hash = await bcrypt.hash(data.password, 10);
+      delete data.password;
+    }
+
+    // Evitar duplicados de CURP o correo en actualización
+    if (data.correo && data.correo !== usuario.correo) {
+      const correoExistente = await this.findByCorreo(data.correo);
+      if (correoExistente) {
+        throw new BadRequestException('El correo ya está en uso');
+      }
+    }
+
+    if (data.curp && data.curp !== usuario.curp) {
+      const curpExistente = await this.usuariosRepository.findOne({ where: { curp: data.curp } });
+      if (curpExistente) {
+        throw new BadRequestException('La CURP ya está en uso');
+      }
     }
 
     await this.usuariosRepository.update(id, data);
@@ -68,16 +96,15 @@ export class UsuariosService {
     return { deleted: !!result.affected && result.affected > 0 };
   }
 
-async login(correo: string, password: string) {
-  const usuario = await this.findByCorreo(correo);
-  if (!usuario) throw new NotFoundException('Usuario no encontrado');
+  async login(correo: string, password: string) {
+    const usuario = await this.findByCorreo(correo);
+    if (!usuario) throw new NotFoundException('Usuario no encontrado');
 
-  const passwordValida = await bcrypt.compare(password, usuario.password_hash);
-  if (!passwordValida) throw new BadRequestException('Contraseña incorrecta');
+    const passwordValida = await bcrypt.compare(password, usuario.password_hash);
+    if (!passwordValida) throw new BadRequestException('Contraseña incorrecta');
 
-  // Retornamos solo los datos públicos
-  const { password_hash, ...usuarioSafe } = usuario;
-  return usuarioSafe;
-}
-
+    // Retornamos solo los datos públicos
+    const { password_hash, ...usuarioSafe } = usuario;
+    return usuarioSafe;
+  }
 }

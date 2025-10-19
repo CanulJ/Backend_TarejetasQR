@@ -8,15 +8,42 @@ export class Usuarios {
   @Column()
   nombre: string;
 
-  @Column({ unique: true })
+  @Column()
   correo: string;
 
   @Column()
   password_hash: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @Column({ type: 'date', nullable: true })
   fecha_creacion: Date;
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column({ length: 18, unique: true })
+  curp: string;
+
+  @Column({ default: 'Activo' })
+  estado: string;
+
+  @Column({ nullable: true })
+  rolid: number;
+
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  fechacreacion: Date;
+
+  @Column({ nullable: true })
+  apellidos: string;
+
+  @Column({ nullable: true })
+  telefono: string;
+
+  @Column({ type: 'date', nullable: true })
+  fechanacimiento: Date;
+
+  @Column({ nullable: true })
+  genero: string;
+
+  @Column({ nullable: true })
+  originario: string;
 }

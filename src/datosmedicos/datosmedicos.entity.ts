@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Usuarios } from '../usuarios/usuarios.entity';
+import { HistoriaClinica } from '../historiaclinica/historiaclinica.entity';
 
 @Entity('DatosMedicos')
 export class DatosMedicos {
@@ -27,4 +28,10 @@ export class DatosMedicos {
 
   @Column({ nullable: true })
   contacto_emergencia: string;
+
+  // Relación con HistoriaClinica
+  @OneToMany(() => HistoriaClinica, (historia) => historia.datosMedicos, {
+    cascade: true,
+  })
+  historiales: HistoriaClinica[];
 }

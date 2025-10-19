@@ -5,7 +5,7 @@ import { DatosMedicos } from './datosmedicos.entity';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 
-describe('DatosmedicosService', () => {
+describe('DatosMedicosService', () => {
   let service: DatosMedicosService;
   let repo: Repository<DatosMedicos>;
 
@@ -20,11 +20,19 @@ describe('DatosmedicosService', () => {
     usuario: {
       id: 1,
       nombre: 'Test User',
+      apellidos: 'Prueba',
+      curp: 'CURP123456ABCDEF78',
+      originario: 'México',
       correo: 'test@example.com',
+      telefono: '555-1234',
+      fechanacimiento: new Date('2000-01-01'),
+      genero: 'M',
       password_hash: 'hash123',
-      fecha_creacion: new Date(),
-      isActive: true
-    }
+      estado: 'Activo',
+      rolid: 1,
+      fecha_creacion: new Date(), // ✅ Nombre correcto según tu entidad
+      isActive: true,
+    },
   };
 
   const mockDatosRepository = {
@@ -85,17 +93,25 @@ describe('DatosmedicosService', () => {
       contacto_emergencia: '555-6789',
     };
 
-    jest.spyOn(repo, 'save').mockResolvedValueOnce({ 
+    jest.spyOn(repo, 'save').mockResolvedValueOnce({
       id_datos: 2,
       ...nuevoDato,
       usuario: {
         id: 2,
-        nombre: 'Test User',
-        correo: 'test@example.com',
-        password_hash: 'hash123',
-        fecha_creacion: new Date(),
-        isActive: true
-      }
+        nombre: 'Nuevo Usuario',
+        apellidos: 'Prueba',
+        curp: 'CURP999999TEST1234',
+        originario: 'México',
+        correo: 'nuevo@example.com',
+        telefono: '555-6789',
+        fechanacimiento: new Date('1999-09-09'),
+        genero: 'M',
+        password_hash: 'hash999',
+        estado: 'Activo',
+        rolid: 1,
+        fechacreacion: new Date(), // ✅ nombre correcto según tu entidad
+        isActive: true,
+      },
     });
 
     const result = await service.create(nuevoDato as DatosMedicos);
@@ -105,7 +121,10 @@ describe('DatosmedicosService', () => {
 
   it('Debe actualizar un registro médico existente', async () => {
     const updateData = { tipo_sangre: 'B+' };
-    jest.spyOn(service, 'findOne').mockResolvedValueOnce({ ...mockDatos, ...updateData });
+    jest.spyOn(service, 'findOne').mockResolvedValueOnce({
+      ...mockDatos,
+      ...updateData,
+    } as any);
 
     const result = await service.update(1, updateData);
     expect(result.tipo_sangre).toBe('B+');

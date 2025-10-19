@@ -1,20 +1,28 @@
-import { 
-  Controller, Get, Post, Put, Delete, Body, Param, 
-  HttpException, HttpStatus 
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { Usuarios } from './usuarios.entity';
-import * as bcrypt from 'bcrypt';
 
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
+  // Obtener todos los usuarios
   @Get()
   findAll(): Promise<Usuarios[]> {
     return this.usuariosService.findAll();
   }
 
+  // Obtener usuario por ID
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<Usuarios> {
     try {
@@ -27,24 +35,53 @@ export class UsuariosController {
     }
   }
 
-@Post()
-async create(@Body() data: Partial<Usuarios>): Promise<Usuarios> {
-  try {
-    return await this.usuariosService.create(data);
-  } catch (error) {
-    console.error('❌ Error al crear usuario:', error.message);
-    throw new HttpException(
-      error.message || 'Error al crear el usuario',
-      error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-    );
+  // Crear nuevo usuario
+  @Post()
+  async create(
+    @Body()
+    data: {
+      nombre: string;
+      apellidos?: string;
+      curp: string;
+      originario?: string;
+      correo: string;
+      telefono?: string;
+      fecha_nacimiento?: Date;
+      genero?: string;
+      password: string; // campo que recibes sin cifrar
+      estado?: string;
+      rolid?: number;
+    },
+  ): Promise<Usuarios> {
+    try {
+      return await this.usuariosService.create(data);
+    } catch (error) {
+      console.error('❌ Error al crear usuario:', error.message);
+      throw new HttpException(
+        error.message || 'Error al crear el usuario',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
-}
 
-
+  // Actualizar usuario
   @Put(':id')
   async update(
     @Param('id') id: number,
-    @Body() data: Partial<Usuarios>,
+    @Body()
+    data: {
+      nombre?: string;
+      apellidos?: string;
+      curp?: string;
+      originario?: string;
+      correo?: string;
+      telefono?: string;
+      fecha_nacimiento?: Date;
+      genero?: string;
+      password?: string;
+      estado?: string;
+      rolid?: number;
+    },
   ): Promise<Usuarios> {
     try {
       return await this.usuariosService.update(id, data);
@@ -56,6 +93,7 @@ async create(@Body() data: Partial<Usuarios>): Promise<Usuarios> {
     }
   }
 
+  // Eliminar usuario
   @Delete(':id')
   async remove(@Param('id') id: number): Promise<{ deleted: boolean }> {
     try {
@@ -68,17 +106,16 @@ async create(@Body() data: Partial<Usuarios>): Promise<Usuarios> {
     }
   }
 
+  // Login de usuario
   @Post('login')
-async login(@Body() body: { correo: string; password: string }) {
-  try {
-    return await this.usuariosService.login(body.correo, body.password);
-  } catch (error) {
-    throw new HttpException(
-      error.message || 'Error en login',
-      error.status || HttpStatus.BAD_REQUEST,
-    );
+  async login(@Body() body: { correo: string; password: string }) {
+    try {
+      return await this.usuariosService.login(body.correo, body.password);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Error en login',
+        error.status || HttpStatus.BAD_REQUEST,
+      );
+    }
   }
-}
-
-
 }
