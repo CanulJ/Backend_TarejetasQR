@@ -10,6 +10,8 @@ import { DatosMedicosModule } from './datosmedicos/datosmedicos.module';
 import { DatosMedicos } from './datosmedicos/datosmedicos.entity';
 import { HistoriaClinica } from './historiaclinica/historiaclinica.entity';
 import { Antecedentes } from './antecedentes/antecedentes.entity';
+import { HistoriaClinicaModule } from './historiaclinica/historiaclinica.module';
+import { AntecedentesModule } from './antecedentes/antecedentes.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { Antecedentes } from './antecedentes/antecedentes.entity';
     // ✅ Módulos principales
     UsuariosModule,
     DatosMedicosModule,
+    HistoriaClinicaModule,
+    AntecedentesModule
   ],
   controllers: [AppController],
   providers: [AppService],
