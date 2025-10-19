@@ -46,7 +46,7 @@ export class UsuariosController {
       originario?: string;
       correo: string;
       telefono?: string;
-      fecha_nacimiento?: Date;
+      fechanacimiento?: Date;
       genero?: string;
       password: string; // campo que recibes sin cifrar
       estado?: string;

@@ -46,19 +46,21 @@ export class UsuariosService {
 
     // Crear usuario con los nuevos campos
     const nuevoUsuario = this.usuariosRepository.create({
-      nombre: data.nombre,
-      apellidos: data.apellidos,
-      curp: data.curp,
-      originario: data.originario,
-      correo: data.correo,
-      telefono: data.telefono,
-      fecha_nacimiento: data.fecha_nacimiento,
-      genero: data.genero,
-      password_hash: hashedPassword,
-      estado: data.estado || 'Activo',
-      rolid: data.rolid,
-      isActive: true,
-    } as unknown as Usuarios);
+  nombre: data.nombre,
+  apellidos: data.apellidos,
+  curp: data.curp,
+  originario: data.originario,
+  correo: data.correo,
+  telefono: data.telefono,
+  fechanacimiento: data.fechanacimiento,
+  genero: data.genero,
+  password_hash: hashedPassword,
+  estado: data.estado || 'Activo',
+  rolid: data.rolid,
+  isActive: true,
+  fecha_creacion: new Date(), // <-- esto asegura que se guarde
+} as unknown as Usuarios);
+
 
     return this.usuariosRepository.save(nuevoUsuario);
   }
