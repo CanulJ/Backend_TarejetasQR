@@ -46,4 +46,10 @@ export class HistoriaClinicaService {
     const result = await this.historiaClinicaRepository.delete(id);
     return { deleted: !!result.affected && result.affected > 0 };
   }
+
+  async findByDatosMedicosId(datosmedicosid: number): Promise<HistoriaClinica[]> {
+  return this.historiaClinicaRepository.find({ where: { datosmedicosid } });
+}
+
+
 }

@@ -21,17 +21,18 @@ export class HistoriaClinicaController {
     return this.historiaClinicaService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: number): Promise<HistoriaClinica> {
-    try {
-      return await this.historiaClinicaService.findOne(id);
-    } catch (error) {
-      throw new HttpException(
-        error.message || 'Historia clínica no encontrada',
-        error.status || HttpStatus.NOT_FOUND,
-      );
-    }
+  @Get('datosmedicos/:id')
+async findByDatosMedicos(@Param('id') id: number): Promise<HistoriaClinica[]> {
+  try {
+    return await this.historiaClinicaService.findByDatosMedicosId(id);
+  } catch (error) {
+    throw new HttpException(
+      error.message || 'No se encontraron historias clínicas',
+      error.status || HttpStatus.NOT_FOUND,
+    );
   }
+}
+
 
   @Post()
   async create(@Body() data: Partial<HistoriaClinica>): Promise<HistoriaClinica> {
