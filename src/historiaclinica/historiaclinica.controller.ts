@@ -33,6 +33,12 @@ async findByDatosMedicos(@Param('id') id: number): Promise<HistoriaClinica[]> {
   }
 }
 
+@Get('usuario/:id')
+async findByUsuario(@Param('id') usuarioId: number) {
+  return this.historiaClinicaService.obtenerPorUsuario(usuarioId);
+}
+
+
 
   @Post()
   async create(@Body() data: Partial<HistoriaClinica>): Promise<HistoriaClinica> {

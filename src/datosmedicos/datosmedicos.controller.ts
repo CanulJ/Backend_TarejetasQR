@@ -33,4 +33,7 @@ async findByUsuario(@Param('id_usuario') id_usuario: number): Promise<DatosMedic
   remove(@Param('id') id: number): Promise<{ deleted: boolean }> {
     return this.datosMedicosService.remove(id);
   }
+
+  
+
 }
