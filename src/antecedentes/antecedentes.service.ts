@@ -21,9 +21,19 @@ export class AntecedentesService {
   }
 
   async create(data: Partial<Antecedentes>): Promise<Antecedentes> {
-    const nuevo = this.antecedentesRepository.create(data);
-    return this.antecedentesRepository.save(nuevo);
-  }
+  const nuevo = this.antecedentesRepository.create({
+    padre: data.padre,
+    madre: data.madre,
+    abuelos: data.abuelos,
+    hermanos: data.hermanos,
+    otros: data.otros,
+    historia: { idhistoria: data.historia?.idhistoria || data['id_historia'] }, 
+    // 🟢 así TypeORM sabe a qué historia asociarlo
+  });
+
+  return this.antecedentesRepository.save(nuevo);
+}
+
 
   async update(id: number, data: Partial<Antecedentes>): Promise<Antecedentes> {
     const antecedente = await this.findOne(id);
@@ -35,4 +45,12 @@ export class AntecedentesService {
     const result = await this.antecedentesRepository.delete(id);
     return { deleted: !!result.affected && result.affected > 0 };
   }
+
+  async findByHistoria(idHistoria: number): Promise<Antecedentes[]> {
+  return this.antecedentesRepository.find({
+    where: { historia: { idhistoria: idHistoria } },
+  });
+}
+
+
 }
