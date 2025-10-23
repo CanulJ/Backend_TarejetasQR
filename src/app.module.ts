@@ -13,6 +13,12 @@ import { Antecedentes } from './antecedentes/antecedentes.entity';
 import { HistoriaClinicaModule } from './historiaclinica/historiaclinica.module';
 import { AntecedentesModule } from './antecedentes/antecedentes.module';
 
+// 🧩 Nuevos módulos y entidades
+import { MedicamentosModule } from './medicamentos/medicamentos.module';
+import { Medicamentos } from './medicamentos/medicamentos.entity';
+import { SeguroMedicoModule } from './seguromedico/seguromedico.module';
+import { SeguroMedico } from './seguromedico/seguromedico.entity';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -22,7 +28,14 @@ import { AntecedentesModule } from './antecedentes/antecedentes.module';
       username: 'postgres.vsunqxpipbilirfztfib',
       password: 'Rosendo1_',
       database: 'postgres',
-      entities: [Usuarios, DatosMedicos, HistoriaClinica, Antecedentes], // ✅ Ambas entidades registradas
+      entities: [
+        Usuarios,
+        DatosMedicos,
+        HistoriaClinica,
+        Antecedentes,
+        Medicamentos,
+        SeguroMedico,
+      ], // ✅ Todas las entidades registradas
       synchronize: false, // Mantener false en producción
     }),
 
@@ -30,7 +43,9 @@ import { AntecedentesModule } from './antecedentes/antecedentes.module';
     UsuariosModule,
     DatosMedicosModule,
     HistoriaClinicaModule,
-    AntecedentesModule
+    AntecedentesModule,
+    MedicamentosModule,
+    SeguroMedicoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
