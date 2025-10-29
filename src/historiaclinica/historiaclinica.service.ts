@@ -51,14 +51,14 @@ export class HistoriaClinicaService {
   return this.historiaClinicaRepository.find({ where: { datosmedicosid } });
 }
 
-async obtenerPorUsuario(usuarioId: number): Promise<HistoriaClinica[]> {
-  return this.historiaClinicaRepository.find({
-    where: { datosMedicos: { usuario: { id: usuarioId } } }, // asegúrate de tener la relación
-    relations: ['datosMedicos'], 
-    order: { fecharegistro: 'DESC' },
-  });
-}
+async obtenerPorUsuario(usuarioId: number): Promise<HistoriaClinica[]> { 
+  return this.historiaClinicaRepository.find({ 
+    where: { datosMedicos: { usuario: { id: usuarioId } } }, // asegúrate de tener la relación 
+    relations: ['datosMedicos'],  
+    order: { fecharegistro: 'DESC' }, 
+  }); 
+} 
 
-
+//cambio de version git
 
 }
