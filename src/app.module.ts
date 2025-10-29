@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-// Módulos y entidades
+// Módulos y entidades existentes
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { Usuarios } from './usuarios/usuarios.entity';
 import { DatosMedicosModule } from './datosmedicos/datosmedicos.module';
@@ -18,6 +18,10 @@ import { MedicamentosModule } from './medicamentos/medicamentos.module';
 import { Medicamentos } from './medicamentos/medicamentos.entity';
 import { SeguroMedicoModule } from './seguromedico/seguromedico.module';
 import { SeguroMedico } from './seguromedico/seguromedico.entity';
+
+// 🧩 NUEVO módulo y entidad de QRCodigos
+import { QRCodigosModule } from './qrcodigos/qrcodigos.module';
+import { QRCodigos } from './qrcodigos/qrcodigos.entity';
 
 @Module({
   imports: [
@@ -35,7 +39,8 @@ import { SeguroMedico } from './seguromedico/seguromedico.entity';
         Antecedentes,
         Medicamentos,
         SeguroMedico,
-      ], // ✅ Todas las entidades registradas
+        QRCodigos, // ✅ Agregada la entidad QRCodigos
+      ],
       synchronize: false, // Mantener false en producción
     }),
 
@@ -46,6 +51,7 @@ import { SeguroMedico } from './seguromedico/seguromedico.entity';
     AntecedentesModule,
     MedicamentosModule,
     SeguroMedicoModule,
+    QRCodigosModule, // ✅ Agregado el módulo QRCodigos
   ],
   controllers: [AppController],
   providers: [AppService],
