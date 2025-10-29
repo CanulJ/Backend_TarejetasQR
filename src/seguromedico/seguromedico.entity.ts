@@ -3,20 +3,20 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity('SeguroMedico')
 export class SeguroMedico {
   @PrimaryGeneratedColumn()
-  IdSeguro: number;
+  idseguro: number;
 
   @Column()
-  DatosMedicosId: number;
+  datosmedicosid: number;
 
   @Column()
-  TipoSeguro: string;
+  tiposeguro: string;
 
   @Column()
-  Institucion: string;
+  institucion: string;
 
   @Column()
-  NumeroPoliza: string;
+  numeropoliza: string;
 
   @Column({ type: 'date' })
-  Vigencia: Date;
+  vigencia: Date;
 }

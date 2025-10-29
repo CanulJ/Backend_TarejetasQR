@@ -15,7 +15,7 @@ export class SeguroMedicoService {
   }
 
   async findOne(id: number): Promise<SeguroMedico> {
-    const seguro = await this.seguroMedicoRepository.findOne({ where: { IdSeguro: id } });
+    const seguro = await this.seguroMedicoRepository.findOne({ where: { idseguro: id } });
     if (!seguro) {
       throw new NotFoundException(`Seguro médico con id ${id} no encontrado`);
     }
@@ -23,16 +23,16 @@ export class SeguroMedicoService {
   }
 
   async create(data: Partial<SeguroMedico>): Promise<SeguroMedico> {
-    if (!data.TipoSeguro || !data.Institucion || !data.NumeroPoliza || !data.Vigencia) {
+    if (!data.tiposeguro || !data.institucion || !data.numeropoliza || !data.vigencia) {
       throw new BadRequestException('Todos los campos son obligatorios');
     }
 
     const nuevoSeguro = this.seguroMedicoRepository.create({
-      DatosMedicosId: data.DatosMedicosId,
-      TipoSeguro: data.TipoSeguro,
-      Institucion: data.Institucion,
-      NumeroPoliza: data.NumeroPoliza,
-      Vigencia: data.Vigencia,
+      datosmedicosid: data.datosmedicosid,
+      tiposeguro: data.tiposeguro,
+      institucion: data.institucion,
+      numeropoliza: data.numeropoliza,
+      vigencia: data.vigencia,
     });
 
     return this.seguroMedicoRepository.save(nuevoSeguro);
