@@ -6,9 +6,6 @@ export class Antecedentes {
   @PrimaryGeneratedColumn()
   id_antecedente: number;
 
-  @Column()
-  id_historia: number;
-
   @ManyToOne(() => HistoriaClinica, (historia) => historia.antecedentes, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_historia' })
   historia: HistoriaClinica;

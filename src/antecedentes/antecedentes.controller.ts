@@ -11,10 +11,12 @@ export class AntecedentesController {
     return this.antecedentesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number): Promise<Antecedentes> {
-    return this.antecedentesService.findOne(id);
-  }
+ @Get('historia/:id')
+findByHistoria(@Param('id') id: number) {
+  return this.antecedentesService.findByHistoria(id);
+}
+
+
 
   @Post()
   create(@Body() data: Partial<Antecedentes>): Promise<Antecedentes> {
