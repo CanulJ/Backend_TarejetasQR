@@ -24,4 +24,7 @@ export class Antecedentes {
 
   @Column({ nullable: true })
   otros: string;
+
+  
+
 }

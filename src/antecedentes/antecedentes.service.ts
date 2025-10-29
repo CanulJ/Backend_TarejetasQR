@@ -52,5 +52,13 @@ export class AntecedentesService {
   });
 }
 
+async findByUsuario(usuarioId: number): Promise<Antecedentes[]> {
+  return this.antecedentesRepository.find({
+    where: { historia: { datosMedicos: { id_usuario: usuarioId } } },
+    relations: ['historia', 'historia.datosMedicos'],
+    order: { id_antecedente: 'DESC' },
+  });
+}
+
 
 }

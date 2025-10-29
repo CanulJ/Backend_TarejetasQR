@@ -40,6 +40,7 @@ async findByUsuario(@Param('id') usuarioId: number) {
 
 
 
+
   @Post()
   async create(@Body() data: Partial<HistoriaClinica>): Promise<HistoriaClinica> {
     try {

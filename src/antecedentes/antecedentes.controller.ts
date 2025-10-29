@@ -16,6 +16,11 @@ findByHistoria(@Param('id') id: number) {
   return this.antecedentesService.findByHistoria(id);
 }
 
+@Get('usuario/:usuarioId')
+async findByUsuario(@Param('usuarioId') usuarioId: number) {
+  return this.antecedentesService.findByUsuario(usuarioId);
+}
+
 
 
   @Post()
