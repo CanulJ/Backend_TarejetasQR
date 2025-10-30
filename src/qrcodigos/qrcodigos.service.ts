@@ -60,8 +60,12 @@ export class QRCodigosService {
   }
 
   async findByToken(token: string): Promise<QRCodigos | null> {
-  return this.qrRepository.findOne({ where: { urlqrcode: token } });
+  return this.qrRepository.findOne({
+    where: { urlqrcode: token },
+    relations: ['usuario'] // <--- importante
+  });
 }
+
 
 
 }
