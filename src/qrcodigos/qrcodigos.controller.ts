@@ -14,23 +14,18 @@ import { QRCodigos } from './qrcodigos.entity';
 
 @Controller('qrcodigos')
 export class QRCodigosController {
-  constructor(private readonly qrService: QRCodigosService) {}
+  constructor(private readonly qrService: QRCodigosService) { }
 
   @Get()
   findAll(): Promise<QRCodigos[]> {
     return this.qrService.findAll();
   }
 
-  @Get(':idqr')
-  async findOne(@Param('idqr') idqr: number): Promise<QRCodigos> {
-    try {
-      return await this.qrService.findOne(idqr);
-    } catch (error) {
-      throw new HttpException(
-        error.message || 'Código QR no encontrado',
-        error.status || HttpStatus.NOT_FOUND,
-      );
-    }
+  @Get('token/:token')
+  async findByToken(@Param('token') token: string): Promise<QRCodigos> {
+    const qr = await this.qrService.findByToken(token);
+    if (!qr) throw new HttpException('Token no encontrado', HttpStatus.NOT_FOUND);
+    return qr;
   }
 
   @Get('usuario/:userid')
@@ -38,22 +33,10 @@ export class QRCodigosController {
     return this.qrService.findByUser(userid);
   }
 
-  @Get('token/:token')
-async findByToken(@Param('token') token: string): Promise<QRCodigos> {
-  try {
-    const qr = await this.qrService.findByToken(token);
-    if (!qr) {
-      throw new HttpException('Token no encontrado', HttpStatus.NOT_FOUND);
-    }
-    return qr;
-  } catch (error) {
-    throw new HttpException(
-      error.message || 'Error al buscar por token',
-      error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-    );
+  @Get(':idqr')
+  async findOne(@Param('idqr') idqr: number): Promise<QRCodigos> {
+    return this.qrService.findOne(idqr);
   }
-}
-
 
   @Post()
   async create(
