@@ -66,23 +66,6 @@ export class QRCodigosService {
   });
 }
 
-async findByNfcUid(uid: string): Promise<QRCodigos | null> {
-  return this.qrRepository.findOne({
-    where: { nfc_uid: uid, estado: 'activo' },
-    relations: ['usuario'],
-  });
-}
-
-async findByTokenAndUID(token: string, uid: string): Promise<QRCodigos | null> {
-  return this.qrRepository.findOne({
-    where: {
-      urlqrcode: token,
-      nfc_uid: uid
-    },
-    relations: ['usuario']
-  });
-}
-
 
 
 }
