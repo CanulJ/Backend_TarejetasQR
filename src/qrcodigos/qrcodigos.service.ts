@@ -58,4 +58,10 @@ export class QRCodigosService {
     const result = await this.qrRepository.delete(idqr);
     return { deleted: !!result.affected && result.affected > 0 };
   }
+
+  async findByToken(token: string): Promise<QRCodigos | null> {
+  return this.qrRepository.findOne({ where: { urlqrcode: token } });
+}
+
+
 }

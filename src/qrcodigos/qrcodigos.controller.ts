@@ -38,6 +38,23 @@ export class QRCodigosController {
     return this.qrService.findByUser(userid);
   }
 
+  @Get('token/:token')
+async findByToken(@Param('token') token: string): Promise<QRCodigos> {
+  try {
+    const qr = await this.qrService.findByToken(token);
+    if (!qr) {
+      throw new HttpException('Token no encontrado', HttpStatus.NOT_FOUND);
+    }
+    return qr;
+  } catch (error) {
+    throw new HttpException(
+      error.message || 'Error al buscar por token',
+      error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+}
+
+
   @Post()
   async create(
     @Body()
