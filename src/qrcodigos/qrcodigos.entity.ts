@@ -18,6 +18,10 @@ export class QRCodigos {
   @Column({ default: 'activo' })
   estado: string;
 
+@Column({ nullable: true })
+nfc_uid?: string; // ahora es opcional
+
+
   // Relación con Usuarios
   @ManyToOne(() => Usuarios)
   @JoinColumn({ name: 'userid' })

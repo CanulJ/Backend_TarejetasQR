@@ -14,7 +14,7 @@ import { QRCodigos } from './qrcodigos.entity';
 
 @Controller('qrcodigos')
 export class QRCodigosController {
-  constructor(private readonly qrService: QRCodigosService) { }
+  constructor(private readonly qrService: QRCodigosService) {}
 
   @Get()
   findAll(): Promise<QRCodigos[]> {
@@ -25,6 +25,13 @@ export class QRCodigosController {
   async findByToken(@Param('token') token: string): Promise<QRCodigos> {
     const qr = await this.qrService.findByToken(token);
     if (!qr) throw new HttpException('Token no encontrado', HttpStatus.NOT_FOUND);
+    return qr;
+  }
+
+  @Get('nfc/:uid')
+  async findByNFC(@Param('uid') uid: string): Promise<QRCodigos> {
+    const qr = await this.qrService.findByNFC(uid);
+    if (!qr) throw new HttpException('Tarjeta NFC no registrada', HttpStatus.NOT_FOUND);
     return qr;
   }
 
@@ -41,7 +48,7 @@ export class QRCodigosController {
   @Post()
   async create(
     @Body()
-    data: { userid: number; urlqrcode: string; estado?: string },
+    data: { userid: number; urlqrcode: string; nfc_uid?: string; estado?: string },
   ): Promise<QRCodigos> {
     try {
       return await this.qrService.create(data);

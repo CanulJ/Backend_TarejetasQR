@@ -31,15 +31,31 @@ export class QRCodigosService {
     });
   }
 
-  async create(data: { userid: number; urlqrcode: string; estado?: string }): Promise<QRCodigos> {
+  async findByToken(token: string): Promise<QRCodigos | null> {
+    return this.qrRepository.findOne({
+      where: { urlqrcode: token },
+      relations: ['usuario']
+    });
+  }
+
+  // 🔹 Nuevo método: Buscar por NFC UID
+  async findByNFC(nfc_uid: string): Promise<QRCodigos | null> {
+    if (!nfc_uid) throw new BadRequestException('UID de NFC es obligatorio');
+    return this.qrRepository.findOne({
+      where: { nfc_uid },
+      relations: ['usuario']
+    });
+  }
+
+  async create(data: { userid: number; urlqrcode: string; nfc_uid?: string; estado?: string }): Promise<QRCodigos> {
     const usuario = await this.usuariosRepository.findOne({ where: { id: data.userid } });
     if (!usuario) throw new NotFoundException('El usuario no existe');
-
     if (!data.urlqrcode) throw new BadRequestException('La URL del código QR es obligatoria');
 
     const nuevoQR = this.qrRepository.create({
       userid: data.userid,
       urlqrcode: data.urlqrcode,
+      nfc_uid: data.nfc_uid, // si viene undefined, TypeORM ignora el campo
       estado: data.estado || 'activo',
     });
 
@@ -58,14 +74,4 @@ export class QRCodigosService {
     const result = await this.qrRepository.delete(idqr);
     return { deleted: !!result.affected && result.affected > 0 };
   }
-
-  async findByToken(token: string): Promise<QRCodigos | null> {
-  return this.qrRepository.findOne({
-    where: { urlqrcode: token },
-    relations: ['usuario'] // <--- importante
-  });
-}
-
-
-
 }
