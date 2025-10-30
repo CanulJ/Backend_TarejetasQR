@@ -12,15 +12,14 @@ export class QRCodigos {
   @Column()
   urlqrcode: string;
 
+  @Column({ type: 'varchar', length: 32, nullable: true })
+  nfc_uid: string | null; // 👈 Aquí se refleja tu campo NFC
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   fechacreacion: Date;
 
   @Column({ default: 'activo' })
   estado: string;
-
-@Column({ nullable: true })
-nfc_uid?: string; // ahora es opcional
-
 
   // Relación con Usuarios
   @ManyToOne(() => Usuarios)
