@@ -33,6 +33,12 @@ export class SeguroMedicoController {
     }
   }
 
+  @Get('usuario/:datosmedicosid')
+findByDatosMedicos(@Param('datosmedicosid') id: number): Promise<SeguroMedico[]> {
+  return this.seguroMedicoService.findByDatosMedicos(id);
+}
+
+
   @Post()
   async create(@Body() data: Partial<SeguroMedico>): Promise<SeguroMedico> {
     try {

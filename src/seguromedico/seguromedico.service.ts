@@ -52,4 +52,10 @@ export class SeguroMedicoService {
     const result = await this.seguroMedicoRepository.delete(id);
     return { deleted: !!result.affected && result.affected > 0 };
   }
+
+  async findByDatosMedicos(id: number): Promise<SeguroMedico[]> {
+  return this.seguroMedicoRepository.find({ where: { datosmedicosid: id } });
+}
+
+
 }
