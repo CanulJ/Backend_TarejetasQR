@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-// Módulos y entidades existentes
+// 🧩 Entidades y módulos existentes
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { Usuarios } from './usuarios/usuarios.entity';
 import { DatosMedicosModule } from './datosmedicos/datosmedicos.module';
@@ -12,16 +12,16 @@ import { HistoriaClinica } from './historiaclinica/historiaclinica.entity';
 import { Antecedentes } from './antecedentes/antecedentes.entity';
 import { HistoriaClinicaModule } from './historiaclinica/historiaclinica.module';
 import { AntecedentesModule } from './antecedentes/antecedentes.module';
-
-// 🧩 Nuevos módulos y entidades
 import { MedicamentosModule } from './medicamentos/medicamentos.module';
 import { Medicamentos } from './medicamentos/medicamentos.entity';
 import { SeguroMedicoModule } from './seguromedico/seguromedico.module';
 import { SeguroMedico } from './seguromedico/seguromedico.entity';
-
-// 🧩 NUEVO módulo y entidad de QRCodigos
 import { QRCodigosModule } from './qrcodigos/qrcodigos.module';
 import { QRCodigos } from './qrcodigos/qrcodigos.entity';
+
+// 🆕 Nueva entidad y módulo
+import { SolicitudesTarjetaModule } from './solicitudes-tarjeta/solicitudes-tarjeta.module';
+import { SolicitudesTarjeta } from './solicitudes-tarjeta/solicitudes-tarjeta.entity';
 
 @Module({
   imports: [
@@ -39,9 +39,10 @@ import { QRCodigos } from './qrcodigos/qrcodigos.entity';
         Antecedentes,
         Medicamentos,
         SeguroMedico,
-        QRCodigos, // ✅ Agregada la entidad QRCodigos
+        QRCodigos,
+        SolicitudesTarjeta, // ✅ Nueva entidad registrada aquí
       ],
-      synchronize: false, // Mantener false en producción
+      synchronize: false, // Mantén false para no romper tablas
     }),
 
     // ✅ Módulos principales
@@ -51,7 +52,8 @@ import { QRCodigos } from './qrcodigos/qrcodigos.entity';
     AntecedentesModule,
     MedicamentosModule,
     SeguroMedicoModule,
-    QRCodigosModule, // ✅ Agregado el módulo QRCodigos
+    QRCodigosModule,
+    SolicitudesTarjetaModule, // ✅ Nuevo módulo integrado
   ],
   controllers: [AppController],
   providers: [AppService],
