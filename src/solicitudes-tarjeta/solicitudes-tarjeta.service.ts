@@ -14,7 +14,7 @@ export class SolicitudesTarjetaService {
   async crearSolicitud(data: Partial<SolicitudesTarjeta>): Promise<SolicitudesTarjeta> {
     const nuevaSolicitud = this.solicitudRepo.create({
       ...data,
-      fecha_Solicitud: new Date(), // Se asigna la fecha actual automáticamente
+      fecha_Solicitud: new Date(),
       estado: 'pendiente',
     });
     return this.solicitudRepo.save(nuevaSolicitud);
@@ -37,13 +37,34 @@ export class SolicitudesTarjetaService {
     });
   }
 
-  // 🔹 Actualizar estado (aprobar o rechazar solicitud)
-  async actualizarEstado(idSolicitud: number, estado: string): Promise<SolicitudesTarjeta> {
-    const solicitud = await this.solicitudRepo.findOne({ where: { idSolicitud } });
+  // 🔹 Actualizar estado y token/QR
+  async actualizarSolicitud(id: number, data: Partial<SolicitudesTarjeta>): Promise<SolicitudesTarjeta> {
+    const solicitud = await this.solicitudRepo.findOne({ where: { idSolicitud: id } });
     if (!solicitud) throw new Error('Solicitud no encontrada');
 
-    solicitud.estado = estado;
-    solicitud.fecha_Revision = new Date();
+    // Si se aprueba y no tiene token, generamos uno
+    if (data.estado === 'aprobada' && !solicitud.token) {
+      solicitud.token = Math.random().toString(36).substring(2, 10);
+      solicitud.fecha_Revision = new Date();
+      // Si envían idQr en data, lo asignamos también
+      if (data.idQr) solicitud.idQr = data.idQr;
+    }
+
+    // Si se aprueba aunque ya tenga token, permitimos actualizar idQr
+    if (data.estado === 'aprobada' && data.idQr) {
+      solicitud.idQr = data.idQr;
+      solicitud.fecha_Revision = new Date();
+    }
+
+    // Si se rechaza, permitimos cambiar estado sin borrar token
+    if (data.estado === 'rechazada') {
+      solicitud.estado = 'rechazada';
+      solicitud.fecha_Revision = new Date();
+    }
+
+    // Asignar cualquier otro campo enviado
+    Object.assign(solicitud, { ...data });
+
     return this.solicitudRepo.save(solicitud);
   }
 
@@ -51,13 +72,4 @@ export class SolicitudesTarjetaService {
   async eliminarSolicitud(idSolicitud: number): Promise<void> {
     await this.solicitudRepo.delete(idSolicitud);
   }
-
-  async actualizarSolicitud(id: number, data: Partial<SolicitudesTarjeta>) {
-  const solicitud = await this.solicitudRepo.findOne({ where: { idSolicitud: id } });
-  if (!solicitud) throw new Error('Solicitud no encontrada');
-  Object.assign(solicitud, data);
-  return this.solicitudRepo.save(solicitud);
-}
-
-
 }

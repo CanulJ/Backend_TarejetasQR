@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, Put } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
 import { SolicitudesTarjetaService } from './solicitudes-tarjeta.service';
 import { SolicitudesTarjeta } from './solicitudes-tarjeta.entity';
 
@@ -12,7 +12,7 @@ export class SolicitudesTarjetaController {
     return this.solicitudService.crearSolicitud(data);
   }
 
-  // 🔹 Obtener todas las solicitudes (para el panel del admin)
+  // 🔹 Obtener todas las solicitudes
   @Get()
   async obtenerSolicitudes() {
     return this.solicitudService.obtenerSolicitudes();
@@ -24,25 +24,16 @@ export class SolicitudesTarjetaController {
     return this.solicitudService.obtenerPorUsuario(userId);
   }
 
-  // 🔹 Actualizar estado (por ejemplo, aprobar o rechazar solicitud)
-  @Patch(':idSolicitud/estado')
-  async actualizarEstado(
+  // 🔹 Actualizar solicitud (estado, token, QR, etc.)
+  @Put(':idSolicitud')
+  async actualizarSolicitud(
     @Param('idSolicitud') idSolicitud: number,
-    @Body('estado') estado: string,
+    @Body() data: Partial<SolicitudesTarjeta>
   ) {
-    return this.solicitudService.actualizarEstado(idSolicitud, estado);
+    return this.solicitudService.actualizarSolicitud(idSolicitud, data);
   }
 
-  @Put(':idSolicitud')
-async actualizarSolicitud(
-  @Param('idSolicitud') idSolicitud: number,
-  @Body() data: Partial<SolicitudesTarjeta>
-) {
-  return this.solicitudService.actualizarSolicitud(idSolicitud, data);
-}
-
-
-  // 🔹 Eliminar una solicitud (si se requiere)
+  // 🔹 Eliminar solicitud
   @Delete(':idSolicitud')
   async eliminarSolicitud(@Param('idSolicitud') idSolicitud: number) {
     await this.solicitudService.eliminarSolicitud(idSolicitud);
