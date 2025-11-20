@@ -8,11 +8,9 @@ import {
   Param,
   HttpException,
   HttpStatus,
-  Res,
 } from '@nestjs/common';
 import { QRCodigosService } from './qrcodigos.service';
 import { QRCodigos } from './qrcodigos.entity';
-import type { Response } from 'express'; // <-- Importar el Response correcto
 
 @Controller('qrcodigos')
 export class QRCodigosController {
@@ -29,20 +27,6 @@ export class QRCodigosController {
     if (!qr) throw new HttpException('Token no encontrado', HttpStatus.NOT_FOUND);
     return qr;
   }
-
-  @Get('acceso/:token')
-  async accesoQR(@Param('token') token: string, @Res() res: Response) {
-    const qr = await this.qrService.findByToken(token);
-
-    if (!qr || qr.estado !== 'activo') {
-      return res.status(404).send('Token inválido o expirado'); // ✅ Funciona
-    }
-
-    // Redirige al frontend sin exponer el token
-    return res.redirect('https://qrtests.netlify.app/inicio'); // ✅ Funciona
-  }
-
-  
 
   @Get('usuario/:userid')
   async findByUser(@Param('userid') userid: number): Promise<QRCodigos[]> {
