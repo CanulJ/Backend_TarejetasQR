@@ -22,6 +22,7 @@ import { QRCodigos } from './qrcodigos/qrcodigos.entity';
 // 🆕 Nueva entidad y módulo
 import { SolicitudesTarjetaModule } from './solicitudes-tarjeta/solicitudes-tarjeta.module';
 import { SolicitudesTarjeta } from './solicitudes-tarjeta/solicitudes-tarjeta.entity';
+import { EnviarEmailModule } from './enviar-email/enviar-email.module';
 
 @Module({
   imports: [
@@ -53,7 +54,8 @@ import { SolicitudesTarjeta } from './solicitudes-tarjeta/solicitudes-tarjeta.en
     MedicamentosModule,
     SeguroMedicoModule,
     QRCodigosModule,
-    SolicitudesTarjetaModule, // ✅ Nuevo módulo integrado
+    SolicitudesTarjetaModule,
+    EnviarEmailModule, // ✅ Nuevo módulo integrado
   ],
   controllers: [AppController],
   providers: [AppService],
