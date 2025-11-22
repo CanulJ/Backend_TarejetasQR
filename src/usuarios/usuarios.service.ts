@@ -27,42 +27,45 @@ export class UsuariosService {
     return await this.usuariosRepository.findOne({ where: { correo } });
   }
 
-  async create(data: any): Promise<Usuarios> {
-    const { correo, password, curp } = data;
+ async create(data: any): Promise<Usuarios> {
+  const { correo, password, curp, telefono } = data;
 
-    if (!correo) throw new BadRequestException('El correo es requerido');
-    if (!password) throw new BadRequestException('La contraseña es requerida');
-    if (!curp) throw new BadRequestException('La CURP es requerida');
+  if (!correo) throw new BadRequestException('El correo es requerido');
+  if (!password) throw new BadRequestException('La contraseña es requerida');
+  if (!curp) throw new BadRequestException('La CURP es requerida');
 
-    // Verificar duplicados
-    const existeCorreo = await this.findByCorreo(correo);
-    if (existeCorreo) throw new BadRequestException('El correo ya está registrado');
+  const existeCorreo = await this.findByCorreo(correo);
+  if (existeCorreo) throw new BadRequestException('El correo ya está registrado');
 
-    const existeCURP = await this.usuariosRepository.findOne({ where: { curp } });
-    if (existeCURP) throw new BadRequestException('La CURP ya está registrada');
+  const existeCURP = await this.usuariosRepository.findOne({ where: { curp } });
+  if (existeCURP) throw new BadRequestException('La CURP ya está registrada');
 
-    // Hashear contraseña
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Crear usuario con los nuevos campos
-    const nuevoUsuario = this.usuariosRepository.create({
-  nombre: data.nombre,
-  apellidos: data.apellidos,
-  curp: data.curp,
-  originario: data.originario,
-  correo: data.correo,
-  telefono: data.telefono,
-  fechanacimiento: data.fechanacimiento,
-  genero: data.genero,
-  password_hash: hashedPassword,
-  rolid: data.rolid,
-  isActive: true,
-  fecha_creacion: new Date(), // <-- esto asegura que se guarde
-} as unknown as Usuarios);
-
-
-    return this.usuariosRepository.save(nuevoUsuario);
+  // ⭐ NUEVO: verifica teléfono
+  if (telefono) {
+    const existeTelefono = await this.usuariosRepository.findOne({ where: { telefono } });
+    if (existeTelefono) throw new BadRequestException('El teléfono ya está registrado');
   }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const nuevoUsuario = this.usuariosRepository.create({
+    nombre: data.nombre,
+    apellidos: data.apellidos,
+    curp: data.curp,
+    originario: data.originario,
+    correo: data.correo,
+    telefono: data.telefono,
+    fechanacimiento: data.fechanacimiento,
+    genero: data.genero,
+    password_hash: hashedPassword,
+    rolid: data.rolid,
+    isActive: true,
+    fecha_creacion: new Date(),
+  } as unknown as Usuarios);
+
+  return this.usuariosRepository.save(nuevoUsuario);
+}
+
 
   async update(id: number, data: any): Promise<Usuarios> {
     const usuario = await this.findOne(id);
@@ -108,4 +111,7 @@ export class UsuariosService {
     const { password_hash, ...usuarioSafe } = usuario;
     return usuarioSafe;
   }
+
+  
+
 }
