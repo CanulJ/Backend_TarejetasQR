@@ -79,4 +79,18 @@ export class QRCodigosController {
       );
     }
   }
+
+  @Delete('token/:token')
+async removeByToken(@Param('token') token: string): Promise<{ deleted: boolean }> {
+  try {
+    return await this.qrService.removeByToken(token);
+  } catch (error) {
+    throw new HttpException(
+      error.message || 'Error al eliminar código QR por token',
+      error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+}
+
+
 }

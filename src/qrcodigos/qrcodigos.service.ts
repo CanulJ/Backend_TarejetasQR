@@ -66,6 +66,10 @@ export class QRCodigosService {
   });
 }
 
+async removeByToken(token: string): Promise<{ deleted: boolean }> {
+  const result = await this.qrRepository.delete({ urlqrcode: token });
+  return { deleted: !!result.affected && result.affected > 0 };
+}
 
 
 }
